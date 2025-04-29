@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:lab/homescreen.dart';
 import 'package:lab/register.dart';
 
-final String baseurl = "http://192.168.1.10:5000";
-
+String baseurl = "";
+int? lid;
 Future<void> loginApi(String username, String password, context) async {
   final dio = Dio();
   try {
@@ -13,11 +13,14 @@ Future<void> loginApi(String username, String password, context) async {
       data: {"username": username, "password": password},
     );
     final usertype = response.data["user_type"];
+    print(response);
+    lid = response.data["login_id"];
     if (response.statusCode == 200 || response.statusCode == 201) {
       if (usertype == "user") {
-        Navigator.pushReplacement(
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => HomeScreen()),
+          (Route) => false,
         );
       } else {
         ScaffoldMessenger.of(

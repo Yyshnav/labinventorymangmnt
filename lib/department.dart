@@ -3,17 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:lab/login.dart';
 import 'package:lab/pdfview.dart';
 
-class Department {
-  final int id;
-  final String name;
-
-  Department({required this.id, required this.name});
-
-  factory Department.fromJson(Map<String, dynamic> json) {
-    return Department(id: json['id'], name: json['department']);
-  }
-}
-
 // PDF model
 class Pdf {
   final String title;
@@ -26,155 +15,9 @@ class Pdf {
   }
 }
 
-class DepartmentListScreen extends StatefulWidget {
-  @override
-  _DepartmentListScreenState createState() => _DepartmentListScreenState();
-}
-
-class _DepartmentListScreenState extends State<DepartmentListScreen> {
-  final Dio _dio = Dio();
-  List<Department> departments = [];
-  bool isLoading = false;
-  String? errorMessage;
-
-  // Assuming baseUrl is defined; replace with your actual base URL
-  // final String baseurl = 'https://api.example.com';
-
-  @override
-  void initState() {
-    super.initState();
-    fetchDepartments();
-  }
-
-  Future<void> fetchDepartments() async {
-    setState(() {
-      isLoading = true;
-      errorMessage = null;
-    });
-
-    try {
-      final response = await _dio.get('$baseurl/DepartmentApi');
-      print(response.data);
-      final List<dynamic> data = response.data;
-      setState(() {
-        departments = data.map((json) => Department.fromJson(json)).toList();
-        isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-        errorMessage = 'Failed to load departments: $e';
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.purple.shade50, // Light purple background
-      appBar: AppBar(
-        title: Text('Departments', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.purple.shade700, // Purple theme for AppBar
-        elevation: 4, // Slight shadow for depth
-        iconTheme: IconThemeData(color: Colors.white), // White icons
-      ),
-      body:
-          isLoading
-              ? Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Colors.purple.shade700,
-                  ),
-                ),
-              )
-              : errorMessage != null
-              ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      color: Colors.purple.shade700,
-                      size: 48,
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      errorMessage!,
-                      style: TextStyle(
-                        color: Colors.purple.shade700,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: fetchDepartments,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.purple.shade700,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: Text('Retry'),
-                    ),
-                  ],
-                ),
-              )
-              : ListView.builder(
-                itemCount: departments.length,
-                itemBuilder: (context, index) {
-                  final department = departments[index];
-                  return Card(
-                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: ListTile(
-                      title: Text(
-                        department.name,
-                        style: TextStyle(
-                          color: Colors.purple.shade700,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      trailing: Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.purple.shade700,
-                        size: 16,
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => PdfListScreen(id: department.id),
-                          ),
-                        );
-                      },
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      tileColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  );
-                },
-              ),
-    );
-  }
-}
-
 // PDF list screen
 class PdfListScreen extends StatefulWidget {
-  final int id;
-
-  const PdfListScreen({super.key, required this.id});
+  const PdfListScreen({super.key});
   @override
   _PdfListScreenState createState() => _PdfListScreenState();
 }
@@ -199,9 +42,7 @@ class _PdfListScreenState extends State<PdfListScreen> {
 
     try {
       // Replace with your actual API endpoint
-      final response = await _dio.get(
-        '$baseurl/GenerateReportApi/${widget.id}',
-      );
+      final response = await _dio.get('$baseurl/GenerateReportApi/$lid');
       print(response.data);
 
       // Check if response.data is a Map (single object) or List

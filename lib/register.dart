@@ -18,6 +18,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   String? selectedDepartment;
   List<Map<String, dynamic>> departments = [];
+  String? selectedUserType;
+  final List<String> userTypes = ['staff', 'other'];
 
   @override
   void initState() {
@@ -47,6 +49,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         'contact': _contactController.text,
         'pen_no': _penNameController.text,
         'department': selectedDepartment,
+        "login_type": selectedUserType ?? "pending",
         "user_type": "pending",
       };
 
@@ -131,6 +134,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                 ),
+                SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: selectedUserType,
+                  items:
+                      userTypes.map((type) {
+                        return DropdownMenuItem(
+                          value: type,
+                          child: Text(
+                            type[0].toUpperCase() + type.substring(1),
+                          ),
+                        );
+                      }).toList(),
+                  onChanged:
+                      (value) => setState(() => selectedUserType = value),
+                  decoration: InputDecoration(
+                    labelText: 'User Type',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+
                 SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: registerUser,

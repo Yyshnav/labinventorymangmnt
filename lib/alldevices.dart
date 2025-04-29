@@ -20,7 +20,7 @@ class _AllDevicesScreenState extends State<AllDevicesScreen> {
   Future<void> fetchDevices() async {
     final dio = Dio();
     try {
-      final response = await dio.get('$baseurl/ViewItemsApi');
+      final response = await dio.get('$baseurl/ViewItemsApi/$lid');
       print(response);
       if (response.statusCode == 200) {
         setState(() {
@@ -97,6 +97,27 @@ class _AllDevicesScreenState extends State<AllDevicesScreen> {
                           SizedBox(height: 6),
                           Text("MRP: ₹${device['price'] ?? 'N/A'}"),
                           Text("Serial No: ${device['serial_no'] ?? 'N/A'}"),
+                          Text(
+                            "Admin Status: ${device['admin_status'] ?? 'N/A'}",
+                            style: TextStyle(
+                              color:
+                                  (device['admin_status'] == 'verified')
+                                      ? Colors.green
+                                      : Colors.orange,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            "HOD Status: ${device['hod_status'] ?? 'N/A'}",
+                            style: TextStyle(
+                              color:
+                                  (device['hod_status'] == 'verified')
+                                      ? Colors.green
+                                      : Colors.orange,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+
                           Text("Model : ${device['model'] ?? 'N/A'}"),
                           SizedBox(height: 6),
 
@@ -115,10 +136,10 @@ class _AllDevicesScreenState extends State<AllDevicesScreen> {
                                       (context) => InvoiceViewScreen(
                                         invoiceData: {
                                           'invoice_no': device['invoice_no'],
-                                          'item_name': device['name'],
+                                          'item_name': device['item_name'],
                                           'model': device['model_number'],
-                                          'serial_no': device['serial_number'],
-                                          'price': device['mrp'],
+                                          'serial_no': device['serial_no'],
+                                          'price': device['price'],
                                           'description': device['description'],
                                           'Bill_date': device['Bill_date'],
                                           'Bussiness_name':
@@ -126,6 +147,7 @@ class _AllDevicesScreenState extends State<AllDevicesScreen> {
                                           'contact': device['contact'],
                                           'address': device['address'],
                                           'GSTIN': device['GSTIN'],
+                                          "Bill_Image": device["Bill_Image"],
                                         },
                                       ),
                                 ),
@@ -198,14 +220,19 @@ class InvoiceViewScreen extends StatelessWidget {
                 // buildTableRow('Serial No', invoiceData['serial_no'] ?? ''),
                 // buildTableRow('Price', '₹${invoiceData['price'] ?? ''}'),
                 // buildTableRow('Description', invoiceData['description'] ?? ''),
-                buildTableRow('Bill Date', invoiceData['Bill_date'] ?? ''),
+                buildTableRow('Price', '₹${invoiceData['price'] ?? ''}'),
+                buildTableRow('Item Name', invoiceData['item_name'] ?? ''),
+                buildTableRow('Serial Number', invoiceData['serial_no'] ?? ''),
                 buildTableRow(
                   'Business Name',
                   invoiceData['Bussiness_name'] ?? '',
                 ),
                 buildTableRow('Contact', invoiceData['contact'] ?? ''),
                 buildTableRow('Address', invoiceData['address'] ?? ''),
+                buildTableRow('Invoice No', invoiceData['invoice_no'] ?? ''),
                 buildTableRow('GSTIN', invoiceData['GSTIN'] ?? ''),
+                buildTableRow('Bill Date', invoiceData['Bill_date'] ?? ''),
+                buildTableRow('Description', invoiceData['description'] ?? ''),
                 if (invoiceData['Bill_Image'] != null)
                   buildTableRow(
                     'Bill Image',
@@ -234,27 +261,6 @@ class InvoiceViewScreen extends StatelessWidget {
                   ),
               ],
             ),
-            SizedBox(height: 20),
-            if (invoiceData['Bill_Image'] != null)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Bill Image:',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  SizedBox(height: 10),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      invoiceData['Bill_Image'], // Assuming the image path is accessible
-                      height: 200,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ],
-              ),
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lab/ipscreen.dart';
 import 'package:lab/login.dart';
 import 'package:lab/register.dart';
 
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: LoginScreen(),
+      home: IpScreen(),
     );
   }
 }

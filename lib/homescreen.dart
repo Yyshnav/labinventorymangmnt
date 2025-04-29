@@ -17,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
     AllDevicesScreen(),
     UsedPhonesScreen(),
     DamagedPhonesScreen(),
-    DepartmentListScreen(),
+    PdfListScreen(),
   ];
 
   @override

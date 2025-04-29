@@ -20,7 +20,7 @@ class _UsedPhonesScreenState extends State<UsedPhonesScreen> {
   Future<void> fetchPhones() async {
     final dio = Dio();
     try {
-      final response = await dio.get('$baseurl/ViewUsedApi');
+      final response = await dio.get('$baseurl/ViewUsedApi/$lid');
       print(response);
       if (response.statusCode == 200) {
         setState(() {
@@ -89,6 +89,27 @@ class _UsedPhonesScreenState extends State<UsedPhonesScreen> {
                             "Description: ${phone['description'] ?? 'No description'}",
                             style: TextStyle(color: Colors.grey[700]),
                           ),
+                          Text(
+                            "Admin Status: ${phone['admin_status'] ?? 'N/A'}",
+                            style: TextStyle(
+                              color:
+                                  (phone['admin_status'] == 'verified')
+                                      ? Colors.green
+                                      : Colors.orange,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            "HOD Status: ${phone['hod_status'] ?? 'N/A'}",
+                            style: TextStyle(
+                              color:
+                                  (phone['hod_status'] == 'verified')
+                                      ? Colors.green
+                                      : Colors.orange,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+
                           SizedBox(height: 12),
                           ElevatedButton(
                             onPressed: () {
